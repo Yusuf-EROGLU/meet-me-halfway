@@ -21,8 +21,7 @@ public class CharacterMoveManager : MonoBehaviour
 
     // Total distance between the markers.
     private float journeyLength;
-
-
+    
 
 
 
@@ -30,6 +29,8 @@ public class CharacterMoveManager : MonoBehaviour
     {
         SwipeDetector.OnSwipe += Move;
         nextPosition = transform.position;
+
+        
 
     }
     // Start is called before the first frame update
@@ -91,7 +92,12 @@ public class CharacterMoveManager : MonoBehaviour
         RaycastHit obstacle;
         Vector3 nextDestination = new Vector3();
 
-        if (Physics.Raycast(transform.position, transform.TransformDirection(moveDirection),out obstacle, range, 1))
+        int ObstaclesLayer = 1 << 8;
+
+        if (this.tag.Equals("Male")) {  ObstaclesLayer = 1 << 8; }
+        else if (this.tag.Equals("Female")) {  ObstaclesLayer = 1 << 9; }
+
+        if (Physics.Raycast(transform.position, transform.TransformDirection(moveDirection),out obstacle, range, ObstaclesLayer))
         {
             Vector3 distanceToObstacle = new Vector3(0,0,0);
             Vector3 distance;
