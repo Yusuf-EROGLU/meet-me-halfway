@@ -7,33 +7,33 @@ using UnityEngine;
 public class CharacterMoveManager : MonoBehaviour
 {
 
-    private float range = 7f;
-
-    Vector3 nextPosition;
+    private float range = 6f;
 
     public Transform startposition;
 
     // Movement speed in units per second.
-    public float speed = 0.5f;
+    public float speed = 1f;
 
     // Time when the movement started.
     private float startTime;
 
     // Total distance between the markers.
     private float journeyLength;
-    
 
-
+    Vector3 up;
+    Vector3 down;
+    Vector3 right;
+    Vector3 left;
+    Vector3 nextPosition;
 
     private void Awake()
     {
+        OrganizeDirection();
         SwipeDetector.OnSwipe += Move;
-        nextPosition = transform.position;
-
-        
-
+        nextPosition = transform.position;    
     }
     // Start is called before the first frame update
+
     void Update()
     {
         if (nextPosition != transform.position) { 
@@ -48,42 +48,29 @@ public class CharacterMoveManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    
-
     private void Move(SwipeData data)
     {
 
-        //transform.position = transform.position + konum;
+    
 
         startTime = Time.time;
         startposition = transform;
 
         switch (data.Direction)
-        {
-            
+        {            
             case SwipeDirection.Up:
-                if (this.tag.Equals("Male"))            nextPosition = DetectNextPosition(transform.TransformDirection(Vector3.right));
-                else if (this.tag.Equals("Female"))     nextPosition = DetectNextPosition(transform.TransformDirection(Vector3.left));
-                   // transform.position = nextPosition;
+                nextPosition = DetectNextPosition(up);     
                 break;
             case SwipeDirection.Down:
-                if (this.tag.Equals("Male"))            nextPosition = DetectNextPosition(transform.TransformDirection(Vector3.left));
-                else if (this.tag.Equals("Female"))     nextPosition = DetectNextPosition(transform.TransformDirection(Vector3.right));
-               // transform.position = nextPosition;
+                nextPosition = DetectNextPosition(down);
                 break;
             case SwipeDirection.Left:
-                nextPosition = DetectNextPosition(transform.TransformDirection(Vector3.back));
-               // transform.position = nextPosition;
+                nextPosition = DetectNextPosition(left);
                 break;
             case SwipeDirection.Right:
-                nextPosition = DetectNextPosition(transform.TransformDirection(Vector3.forward));
-             //   transform.position = nextPosition;
+                nextPosition = DetectNextPosition(right);
                 break;
-
         }
-
-
         journeyLength = Vector3.Distance(transform.position, nextPosition);
     }
 
@@ -92,12 +79,13 @@ public class CharacterMoveManager : MonoBehaviour
         RaycastHit obstacle;
         Vector3 nextDestination = new Vector3();
 
-        int ObstaclesLayer = 1 << 8;
+        int obstacLesLayer = 1 << 8;
+        int borderLayer = 1 << 10;
 
-        if (this.tag.Equals("Male")) {  ObstaclesLayer = 1 << 8; }
-        else if (this.tag.Equals("Female")) {  ObstaclesLayer = 1 << 9; }
+        if (this.tag.Equals("Male")) { obstacLesLayer = 1 << 8; }
+        else if (this.tag.Equals("Female")) { obstacLesLayer = 1 << 9; }
 
-        if (Physics.Raycast(transform.position, transform.TransformDirection(moveDirection),out obstacle, range, ObstaclesLayer))
+        if (Physics.Raycast(transform.position, transform.TransformDirection(moveDirection),out obstacle, range, obstacLesLayer))
         {
             Vector3 distanceToObstacle = new Vector3(0,0,0);
             Vector3 distance;
@@ -107,8 +95,7 @@ public class CharacterMoveManager : MonoBehaviour
             float absDistanceY;
             
             distance = transform.position - obstacle.transform.position;
-
-            Debug.Log(distance + "mesafe");
+      
             absDistanceX = Math.Abs(distance.x);
             absDistanceZ = Math.Abs(distance.z);
             absDistanceY = Math.Abs(distance.y);
@@ -117,10 +104,48 @@ public class CharacterMoveManager : MonoBehaviour
             if(absDistanceZ > 0.1) distanceToObstacle.z = distance.z / absDistanceZ;
             if(absDistanceY > 0.1) distanceToObstacle.y = distance.y / absDistanceY;
             
-            nextDestination = obstacle.transform.position + distanceToObstacle; 
+            nextDestination = obstacle.transform.position + distanceToObstacle;
+        }
+        else if(Physics.Raycast(transform.position, transform.TransformDirection(moveDirection), out obstacle, range, borderLayer))
+        {
+            nextDestination = DetectFallingPosition(moveDirection, obstacle);
+            Debug.Log(obstacle.transform.position);
         }
 
         return nextDestination;
     }
-    
+
+    private Vector3 DetectFallingPosition(Vector3 moveDirect, RaycastHit obs)
+    {
+        Vector3 temp;
+        temp = transform.position;
+
+        if (moveDirect == up || moveDirect == down) {
+            temp.x = obs.transform.position.x;
+        }else if( moveDirect == right || moveDirect == left)
+        {
+            temp.z = obs.transform.position.z;
+        }
+        return temp;      
+    }
+
+
+    private void OrganizeDirection()
+    {
+        switch (this.tag)
+        {
+            case "Male":
+                up = transform.TransformDirection(Vector3.right);
+                down = transform.TransformDirection(Vector3.left);
+                left = transform.TransformDirection(Vector3.back);
+                right = transform.TransformDirection(Vector3.forward);
+                break;
+            case "Female":
+                up = transform.TransformDirection(Vector3.left);
+                down = transform.TransformDirection(Vector3.right);
+                left = transform.TransformDirection(Vector3.back);
+                right = transform.TransformDirection(Vector3.forward);
+                break;
+        }      
+    }
 }

@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Male
   - Female
+  - Border
   layers:
   - Default
   - TransparentFX
@@ -17,7 +18,7 @@ TagManager:
   - 
   - MaleObstacles
   - FemaleObstacles
-  - 
+  - Border
   - 
   - 
   - 
