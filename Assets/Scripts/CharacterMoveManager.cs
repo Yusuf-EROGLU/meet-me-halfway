@@ -48,14 +48,16 @@ public class CharacterMoveManager : MonoBehaviour
         }
     }
 
+    void OnDisable()
+    {
+        SwipeDetector.OnSwipe -= Move;
+    }
+
     private void Move(SwipeData data)
     {
-
-        Debug.Log(ScoreManager.femaleOntheButton);
-
         startTime = Time.time;
         startposition = transform;
-
+        
         switch (data.Direction)
         {            
             case SwipeDirection.Up:

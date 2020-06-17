@@ -13,9 +13,9 @@ public class LevelControl : MonoBehaviour
     public GameObject noRigidBarrelPrefab;
     public GameObject femaleCharacter;
     public GameObject maleCharacter;
-    public GameObject playButton;
-    public GameObject retryButton;
-
+    public GameObject failCanvas;
+    public GameObject nextLevelCanvas;
+    public int levelGoal;
 
 
     // Start is called before the first frame update
@@ -30,12 +30,13 @@ public class LevelControl : MonoBehaviour
         if (isLevelAchived())
         {
             Debug.Log("bölüm bitti");
+            if (!nextLevelCanvas.activeSelf) { nextLevelCanvas.SetActive(true); }
         }
         else if (isLevelFailed())
         {
             Debug.Log("Bölüm Başarısız");
-            LevelReset(1);
-            retryButton.SetActive(true);
+            
+            if (!failCanvas.activeSelf) { failCanvas.SetActive(true); }
 
         }
     }
@@ -64,7 +65,7 @@ public class LevelControl : MonoBehaviour
     private bool isLevelAchived()
     {
         bool located = ScoreManager.femaleOntheButton && ScoreManager.maleOntheButton;
-        bool loaded = ScoreManager.femaleLoad == 2 && ScoreManager.maleLoad == 2;
+        bool loaded = ScoreManager.femaleLoad == levelGoal && ScoreManager.maleLoad == levelGoal;
         if (located && loaded)
         {
             return true;
@@ -84,14 +85,7 @@ public class LevelControl : MonoBehaviour
         switch (level)
         {
             case 1:
-               
-              /*  ScoreManager.ResetScoreManager();
-                ScoreManager.currentLevel = 1;
-                ScoreManager.maleFalling = false;
-                ScoreManager.femaleFalling = false;
-          //      ResetCharactersPosition();
-                playButton.SetActive(false);
-                retryButton.SetActive(false);*/
+              
                 SceneManager.LoadScene("Level2");
                 break;
         }

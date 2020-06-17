@@ -14,7 +14,10 @@ public class SwipeDetector : MonoBehaviour
 
     public static event Action<SwipeData> OnSwipe = delegate { };
 
-
+    private void Awake()
+    {
+       
+    }
     private void Update()
     {
         foreach (Touch touch in Input.touches)

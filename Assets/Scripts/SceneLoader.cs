@@ -5,10 +5,11 @@ using UnityEngine.SceneManagement;
 
 public class SceneLoader : MonoBehaviour
 {
- 
+
+
     public void Loadscene(string lvl)
     {
-        SceneManager.LoadScene("lvl");
-
+        SceneManager.LoadScene(lvl);
+        ScoreManager.ResetScoreManager();
     }
 }
