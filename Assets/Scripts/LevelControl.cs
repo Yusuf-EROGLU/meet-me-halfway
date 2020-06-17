@@ -1,13 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LevelControl : MonoBehaviour
 {
+    ///!!!!!! this class is temp solution
+
+
+    public GameObject MaleObsttaclePrefab;
+    public GameObject FemaleObsttaclePrefab;
+    public GameObject noRigidBarrelPrefab;
+    public GameObject femaleCharacter;
+    public GameObject maleCharacter;
+    public GameObject playButton;
+    public GameObject retryButton;
+
+
+
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        
+         
     }
 
     // Update is called once per frame
@@ -20,6 +34,8 @@ public class LevelControl : MonoBehaviour
         else if (isLevelFailed())
         {
             Debug.Log("Bölüm Başarısız");
+            LevelReset(1);
+            retryButton.SetActive(true);
 
         }
     }
@@ -60,5 +76,32 @@ public class LevelControl : MonoBehaviour
         bool fall = ScoreManager.femaleFalling || ScoreManager.maleFalling;
         return fall;
     }
+
+
+
+    public void LevelReset(int level)
+    {
+        switch (level)
+        {
+            case 1:
+               
+              /*  ScoreManager.ResetScoreManager();
+                ScoreManager.currentLevel = 1;
+                ScoreManager.maleFalling = false;
+                ScoreManager.femaleFalling = false;
+          //      ResetCharactersPosition();
+                playButton.SetActive(false);
+                retryButton.SetActive(false);*/
+                SceneManager.LoadScene("Level2");
+                break;
+        }
+    }
+
+    private void ResetCharactersPosition()
+    {
+        femaleCharacter.transform.position = new Vector3(5.5f, 0.5f, 1.5f);
+   
+        maleCharacter.transform.position = new Vector3(-7.5f, 0.5f, 1.5f); 
+}
 
 }

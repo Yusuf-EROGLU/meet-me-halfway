@@ -51,7 +51,7 @@ public class CharacterMoveManager : MonoBehaviour
     private void Move(SwipeData data)
     {
 
-    
+        Debug.Log(ScoreManager.femaleOntheButton);
 
         startTime = Time.time;
         startposition = transform;
